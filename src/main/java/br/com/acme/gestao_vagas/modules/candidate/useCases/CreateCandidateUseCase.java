@@ -1,5 +1,6 @@
 package br.com.acme.gestao_vagas.modules.candidate.useCases;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.acme.gestao_vagas.exceptions.UserFoundException;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 @Service
 public class CreateCandidateUseCase {
     private CandidateRepository candidateRepository;
+    private PasswordEncoder passwordEncoder;
 
     public CandidateEntity execute(CandidateEntity candidate) {
         this.candidateRepository
@@ -18,7 +20,8 @@ public class CreateCandidateUseCase {
                 .ifPresent(user -> {
                     throw new UserFoundException();
                 });
-
+        var password = this.passwordEncoder.encode(candidate.getPassword());
+        candidate.setPassword(password);
         return this.candidateRepository.save(candidate);
     }
 
