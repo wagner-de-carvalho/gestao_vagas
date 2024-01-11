@@ -29,6 +29,7 @@ public class CandidateEntity {
 
     @Length(min = 10, max = 100, message = "A senha deve conter entre 10 e 100 caracteres")
     private String password;
+    private String description;
 
     private String curriculum;
 }
