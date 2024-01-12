@@ -3,6 +3,7 @@ package br.com.acme.gestao_vagas.modules.candidate.controllers;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +38,7 @@ public class CandidateController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('CANDIDATE')")
     public ResponseEntity<Object> get(HttpServletRequest request) {
         var candidateId = UUID.fromString(request.getAttribute("candidate_id").toString());
 
