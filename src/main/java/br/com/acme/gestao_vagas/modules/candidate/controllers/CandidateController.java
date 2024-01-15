@@ -32,6 +32,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/candidate")
+@Tag(name = "Candidato", description = "Informações do candidato")
 public class CandidateController {
 
     private CreateCandidateUseCase createCandidateUseCase;
@@ -39,6 +40,13 @@ public class CandidateController {
     private ListAllJobsByFilterUseCase listAllJobsByFilterUseCase;
 
     @PostMapping
+    @Operation(summary = "Listagens de vagas disponíveis para os candidatos", description = "Essa função é responsável por cadastrar um candidato")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = CandidateEntity.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Usuário já existe")
+    })
     public ResponseEntity<Object> create(@Valid @RequestBody CandidateEntity candidate) {
         try {
             var result = this.createCandidateUseCase.execute(candidate);
@@ -64,7 +72,6 @@ public class CandidateController {
 
     @GetMapping("/job")
     @PreAuthorize("hasRole('CANDIDATE')")
-    @Tag(name = "Candidato", description = "Informações do candidato")
     @Operation(summary = "Listagens de vagas disponíveis para os candidatos", description = "Essa função é responsável por listar vagas disponíveis de acordo com o filtro")
     @ApiResponses({ @ApiResponse(responseCode = "200", content = {
             @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
