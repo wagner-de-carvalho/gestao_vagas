@@ -2,7 +2,6 @@ package br.com.acme.gestao_vagas.modules.candidate.useCases;
 
 import java.util.UUID;
 
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import br.com.acme.gestao_vagas.exceptions.JobNotFoundException;
@@ -17,7 +16,7 @@ public class ApplyJobCandidateUseCase {
     private CandidateRepository candidateRepository;
     private JobRepository jobRepository;
 
-    public void execute(UUID candidateId, UUID jobId) {
+    public String execute(UUID candidateId, UUID jobId) {
         this.candidateRepository.findById(candidateId)
                 .orElseThrow(() -> {
                     throw new UserNotFoundException("User not found");
@@ -27,6 +26,8 @@ public class ApplyJobCandidateUseCase {
                 .orElseThrow(() -> {
                     throw new JobNotFoundException("Job not found");
                 });
+
+        return "TODO";
     }
 
 }
