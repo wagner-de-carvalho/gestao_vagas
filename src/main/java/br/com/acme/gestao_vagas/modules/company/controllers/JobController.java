@@ -31,15 +31,14 @@ public class JobController {
     @PostMapping
     @PreAuthorize("hasRole('JOB')")
     @Tag(name = "Vagas", description = "Informações das vagas")
-    @Operation(summary = "Cadastro de vagas", description = "Essa função é responsável por cadastrar vagas debtro da empresa")
+    @Operation(summary = "Cadastro de vagas", description = "Essa função é responsável por cadastrar vagas dentro da empresa")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = JobEntity.class)))
     })
 
     @SecurityRequirement(name = "jwt_auth")
-    public JobEntity create(@Valid @RequestBody CreateJobDTO createJobDTO, HttpServletRequest request) {
+    public JobEntity create(@RequestBody CreateJobDTO createJobDTO, HttpServletRequest request) {
         var companyId = UUID.fromString(request.getAttribute("company_id").toString());
-
         var jobEntity = JobEntity.builder()
                 .benefits(createJobDTO.getBenefits())
                 .companyId(companyId)

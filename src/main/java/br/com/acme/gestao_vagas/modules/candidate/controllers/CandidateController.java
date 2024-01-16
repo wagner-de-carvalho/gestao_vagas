@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.acme.gestao_vagas.modules.candidate.CandidateEntity;
+import br.com.acme.gestao_vagas.modules.candidate.useCases.ApplyJobCandidateUseCase;
 import br.com.acme.gestao_vagas.modules.candidate.useCases.CreateCandidateUseCase;
 import br.com.acme.gestao_vagas.modules.candidate.useCases.ListAllJobsByFilterUseCase;
 import br.com.acme.gestao_vagas.modules.candidate.useCases.ProfileCandidateUseCase;
@@ -35,12 +36,13 @@ import lombok.AllArgsConstructor;
 @Tag(name = "Candidato", description = "Informações do candidato")
 public class CandidateController {
 
+    private ApplyJobCandidateUseCase applyJobCandidateUseCase;
     private CreateCandidateUseCase createCandidateUseCase;
-    private ProfileCandidateUseCase profileCandidateUseCase;
     private ListAllJobsByFilterUseCase listAllJobsByFilterUseCase;
+    private ProfileCandidateUseCase profileCandidateUseCase;
 
     @PostMapping
-    @Operation(summary = "Listagens de vagas disponíveis para os candidatos", description = "Essa função é responsável por cadastrar um candidato")
+    @Operation(summary = "Cadastramento de um novo candidato", description = "Essa função é responsável por cadastrar um candidato")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
                     @Content(schema = @Schema(implementation = CandidateEntity.class))
@@ -75,11 +77,25 @@ public class CandidateController {
     @Operation(summary = "Listagens de vagas disponíveis para os candidatos", description = "Essa função é responsável por listar vagas disponíveis de acordo com o filtro")
     @ApiResponses({ @ApiResponse(responseCode = "200", content = {
             @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
-
     }) })
     @SecurityRequirement(name = "jwt_auth")
     public List<JobEntity> findJobByFilter(@RequestParam String filter) {
         return this.listAllJobsByFilterUseCase.execute(filter);
+    }
+
+    @PostMapping("/job/apply")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary = "Inscrição do candidato em uma vaga", description = "Essa função é responsável por realizar inscrição do candidato em uma vaga")
+    @SecurityRequirement(name = "jwt_auth")
+    public ResponseEntity<Object> applyJob(HttpServletRequest request, @RequestBody UUID jobId) {
+        var candidateId = UUID.fromString(request.getAttribute("candidate_id").toString());
+        try {
+            var jobAppication = this.applyJobCandidateUseCase.execute(candidateId, jobId);
+            return ResponseEntity.ok().body(jobAppication);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
 }
