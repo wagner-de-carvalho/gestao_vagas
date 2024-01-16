@@ -9,7 +9,6 @@ import br.com.acme.gestao_vagas.exceptions.UserNotFoundException;
 import br.com.acme.gestao_vagas.modules.candidate.CandidateRepository;
 import br.com.acme.gestao_vagas.modules.candidate.entity.ApplyJobEntity;
 import br.com.acme.gestao_vagas.modules.candidate.repository.ApplyJobRepository;
-import br.com.acme.gestao_vagas.modules.company.entities.JobEntity;
 import br.com.acme.gestao_vagas.modules.company.repositories.JobRepository;
 import lombok.AllArgsConstructor;
 
