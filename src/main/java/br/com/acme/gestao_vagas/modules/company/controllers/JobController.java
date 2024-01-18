@@ -37,7 +37,7 @@ public class JobController {
     })
 
     @SecurityRequirement(name = "jwt_auth")
-    public JobEntity create(@RequestBody CreateJobDTO createJobDTO, HttpServletRequest request) {
+    public JobEntity create(@Valid @RequestBody CreateJobDTO createJobDTO, HttpServletRequest request) {
         var companyId = UUID.fromString(request.getAttribute("company_id").toString());
         var jobEntity = JobEntity.builder()
                 .benefits(createJobDTO.getBenefits())
